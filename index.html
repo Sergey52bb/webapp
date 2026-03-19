@@ -1,130 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>TON Wallet</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: linear-gradient(180deg, #020617, #0f172a);
-  color: white;
-  display: flex;
-  justify-content: center;
-}
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(180deg, #020617, #0f172a);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
 
-.container {
-  width: 100%;
-  max-width: 420px;
-  padding: 20px;
-}
+  .container {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+  }
 
-.title {
-  text-align: center;
-  font-size: 22px;
-  margin-bottom: 20px;
-}
+  .title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
 
-.card {
-  background: #111827;
-  padding: 20px;
-  border-radius: 18px;
-  margin-bottom: 15px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-}
+  .card {
+    background: #111827;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
 
-.balance {
-  font-size: 28px;
-  font-weight: bold;
-}
+  .card h2 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: #9ca3af;
+  }
 
-.address {
-  font-size: 12px;
-  opacity: 0.7;
-  word-break: break-all;
-}
+  .card p {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
 
-.buttons {
-  display: flex;
-  gap: 10px;
-}
+  .button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    transition: 0.3s;
+  }
 
-.btn {
-  flex: 1;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  font-size: 15px;
-  background: #2563eb;
-  color: white;
-}
+  .deposit {
+    background: #3b82f6;
+  }
+  .deposit:hover {
+    background: #2563eb;
+  }
 
-.btn.secondary {
-  background: #1f2937;
-}
+  .send {
+    background: #10b981;
+  }
+  .send:hover {
+    background: #059669;
+  }
 
-.big-btn {
-  width: 100%;
-  margin-top: 10px;
-  padding: 15px;
-  border-radius: 14px;
-  font-size: 16px;
-  background: #7c3aed;
-  border: none;
-  color: white;
-}
+  .commission {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+    color: #9ca3af;
+  }
 </style>
 </head>
-
 <body>
-
 <div class="container">
+  <div class="title">🟣 TON Wallet</div>
 
-<div class="title">🟣 TON Wallet</div>
+  <div class="card">
+    <h2>💰 Balance</h2>
+    <p id="balance">0.000 TON</p>
+  </div>
 
-<div class="card">
-  <div>💰 Balance</div>
-  <div class="balance" id="balance">Loading...</div>
-</div>
+  <div class="card">
+    <h2>💼 Address</h2>
+    <p id="address">EQ_...YOUR_ADDRESS...</p>
+  </div>
 
-<div class="card">
-  <div>💼 Address</div>
-  <div class="address" id="address">Loading...</div>
-</div>
+  <button class="button deposit" onclick="alert('Deposit clicked!')">➕ Deposit</button>
+  <button class="button send" onclick="alert('Send clicked!')">✉️ Send</button>
 
-<div class="buttons">
-  <button class="btn">➕ Deposit</button>
-  <button class="btn secondary">✉️ Send</button>
-</div>
-
-<button class="big-btn" onclick="loadData()">🔄 Refresh</button>
-
+  <div class="commission">⚡ Commission: 0.25%</div>
 </div>
 
 <script>
-const tg = window.Telegram.WebApp;
-tg.expand();
+  // ==== STUB DATA ====
+  const userAddress = 'EQAy81M_996vELPDJISuBsaPNggPxlk6V2EJ4iM2DqGMio35';
+  const userBalance = 0.000;
 
-const chatId = tg.initDataUnsafe?.user?.id;
-
-// 🔥 Загрузка данных
-async function loadData() {
-  try {
-    const res = await fetch(`http://YOUR_IP:3001/user?id=${chatId}`);
-    const data = await res.json();
-
-    document.getElementById('balance').innerText = data.balance + ' TON';
-    document.getElementById('address').innerText = data.address;
-
-  } catch (e) {
-    document.getElementById('balance').innerText = 'Error';
-  }
-}
-
-loadData();
+  // ==== INSERT DATA INTO PAGE ====
+  document.getElementById('address').innerText = userAddress;
+  document.getElementById('balance').innerText = userBalance.toFixed(3) + ' TON';
 </script>
-
 </body>
 </html>
