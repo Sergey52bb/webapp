@@ -4,39 +4,46 @@
 <meta charset="UTF-8">
 <title>TON Wallet</title>
 <style>
-  body {
+  html, body {
     margin: 0;
+    padding: 0;
+    height: 100%;
     font-family: Arial, sans-serif;
     background: linear-gradient(180deg, #020617, #0f172a);
     color: white;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    min-height: 100vh;
   }
 
   .container {
     width: 100%;
-    max-width: 420px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* элементы растягиваются по вертикали */
+    align-items: center;
     padding: 20px;
   }
 
   .title {
     text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 28px;
+    margin-bottom: 10px;
   }
 
   .card {
     background: #111827;
-    padding: 20px;
+    padding: 25px;
     border-radius: 15px;
-    margin-bottom: 15px;
+    width: 90%;
+    text-align: center;
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    font-size: 18px;
   }
 
   .card h2 {
-    margin: 0 0 10px 0;
+    margin-bottom: 10px;
     font-size: 16px;
     color: #9ca3af;
   }
@@ -45,16 +52,24 @@
     margin: 0;
     font-size: 20px;
     font-weight: bold;
+    word-break: break-all;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin-top: 20px;
   }
 
   .button {
-    display: block;
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
+    padding: 18px;
+    margin: 10px 0;
     border: none;
-    border-radius: 10px;
-    font-size: 16px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
     color: white;
     transition: 0.3s;
@@ -75,7 +90,6 @@
   }
 
   .commission {
-    text-align: center;
     margin-top: 15px;
     font-size: 14px;
     color: #9ca3af;
@@ -83,24 +97,26 @@
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="title">🟣 TON Wallet</div>
+  <div class="container">
+    <div class="title">🟣 TON Wallet</div>
 
-  <div class="card">
-    <h2>💰 Balance</h2>
-    <p id="balance">0.000 TON</p>
+    <div class="card">
+      <h2>💰 Balance</h2>
+      <p id="balance">0.000 TON</p>
+    </div>
+
+    <div class="card">
+      <h2>💼 Address</h2>
+      <p id="address">EQAy81M_996vELPDJISuBsaPNggPxlk6V2EJ4iM2DqGMio35</p>
+    </div>
+
+    <div class="buttons">
+      <button class="button deposit" onclick="alert('Deposit clicked!')">➕ Deposit</button>
+      <button class="button send" onclick="alert('Send clicked!')">✉️ Send</button>
+    </div>
+
+    <div class="commission">⚡ Commission: 0.25%</div>
   </div>
-
-  <div class="card">
-    <h2>💼 Address</h2>
-    <p id="address">EQ_...YOUR_ADDRESS...</p>
-  </div>
-
-  <button class="button deposit" onclick="alert('Deposit clicked!')">➕ Deposit</button>
-  <button class="button send" onclick="alert('Send clicked!')">✉️ Send</button>
-
-  <div class="commission">⚡ Commission: 0.25%</div>
-</div>
 
 <script>
   // ==== STUB DATA ====
