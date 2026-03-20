@@ -3,129 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <title>TON Wallet</title>
+
+<!-- Telegram SDK -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(180deg, #020617, #0f172a);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial;
+  background: linear-gradient(180deg, #020617, #0f172a);
+  color: white;
+}
 
-  .container {
-    width: 100%;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around; /* элементы растягиваются по вертикали */
-    align-items: center;
-    padding: 20px;
-  }
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
 
-  .title {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 10px;
-  }
+.title {
+  text-align: center;
+  font-size: 26px;
+  margin-top: 10px;
+}
 
-  .card {
-    background: #111827;
-    padding: 25px;
-    border-radius: 15px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    font-size: 18px;
-  }
+.card {
+  background: #111827;
+  padding: 20px;
+  border-radius: 16px;
+  margin-top: 15px;
+}
 
-  .card h2 {
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #9ca3af;
-  }
+.balance {
+  font-size: 28px;
+  font-weight: bold;
+}
 
-  .card p {
-    margin: 0;
-    font-size: 20px;
-    font-weight: bold;
-    word-break: break-all;
-  }
+.address {
+  font-size: 12px;
+  opacity: 0.7;
+  word-break: break-all;
+}
 
-  .buttons {
-    display: flex;
-    flex-direction: column;
-    width: 90%;
-    margin-top: 20px;
-  }
+.buttons {
+  margin-top: 20px;
+}
 
-  .button {
-    width: 100%;
-    padding: 18px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    color: white;
-    transition: 0.3s;
-  }
+.btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  margin-top: 10px;
+  color: white;
+}
 
-  .deposit {
-    background: #3b82f6;
-  }
-  .deposit:hover {
-    background: #2563eb;
-  }
+.deposit { background: #2563eb; }
+.send { background: #10b981; }
+.refresh { background: #7c3aed; }
 
-  .send {
-    background: #10b981;
-  }
-  .send:hover {
-    background: #059669;
-  }
-
-  .commission {
-    margin-top: 15px;
-    font-size: 14px;
-    color: #9ca3af;
-  }
+.footer {
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
 </style>
 </head>
+
 <body>
-  <div class="container">
-    <div class="title">🟣 TON Wallet</div>
 
-    <div class="card">
-      <h2>💰 Balance</h2>
-      <p id="balance">0.000 TON</p>
-    </div>
+<div class="container">
 
-    <div class="card">
-      <h2>💼 Address</h2>
-      <p id="address">EQAy81M_996vELPDJISuBsaPNggPxlk6V2EJ4iM2DqGMio35</p>
-    </div>
+<div>
+  <div class="title">🟣 TON Wallet</div>
 
-    <div class="buttons">
-      <button class="button deposit" onclick="alert('Deposit clicked!')">➕ Deposit</button>
-      <button class="button send" onclick="alert('Send clicked!')">✉️ Send</button>
-    </div>
-
-    <div class="commission">⚡ Commission: 0.25%</div>
+  <div class="card">
+    <div>💰 Balance</div>
+    <div class="balance" id="balance">Loading...</div>
   </div>
 
-<script>
-  // ==== STUB DATA ====
-  const userAddress = 'EQAy81M_996vELPDJISuBsaPNggPxlk6V2EJ4iM2DqGMio35';
-  const userBalance = 0.000;
+  <div class="card">
+    <div>💼 Address</div>
+    <div class="address" id="address">Loading...</div>
+  </div>
+</div>
 
-  // ==== INSERT DATA INTO PAGE ====
-  document.getElementById('address').innerText = userAddress;
-  document.getElementById('balance').innerText = userBalance.toFixed(3) + ' TON';
+<div class="buttons">
+  <button class="btn deposit" onclick="deposit()">➕ Deposit</button>
+  <button class="btn send" onclick="send()">✉️ Send</button>
+  <button class="btn refresh" onclick="loadData()">🔄 Refresh</button>
+</div>
+
+<div class="footer">⚡ Commission: 0.25%</div>
+
+</div>
+
+<script>
+const tg = window.Telegram.WebApp;
+tg.expand();
+
+// 👉 получаем ID пользователя Telegram
+const userId = tg.initDataUnsafe?.user?.id;
+
+// 🔥 ВРЕМЕННО (пока без сервера)
+const fakeData = {
+  address: "EQAy81M_996vELPDJISuBsaPNggPxlk6V2EJ4iM2DqGMio35",
+  balance: 0.000
+};
+
+// 🔥 загрузка данных
+function loadData() {
+  // ПОКА используем фейк (потом подключим API)
+  document.getElementById('address').innerText = fakeData.address;
+  document.getElementById('balance').innerText = fakeData.balance.toFixed(3) + " TON";
+}
+
+// кнопки
+function deposit() {
+  alert("Send TON to your address");
+}
+
+function send() {
+  alert("Send feature coming soon");
+}
+
+loadData();
 </script>
+
 </body>
 </html>
