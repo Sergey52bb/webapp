@@ -1,77 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>TON Wallet</title>
-
-<!-- Telegram SDK -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-html, body {
+* {
   margin: 0;
   padding: 0;
-  height: 100%;
-  font-family: Arial;
-  background: linear-gradient(180deg, #020617, #0f172a);
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, Arial;
+  background: radial-gradient(circle at 20% 20%, #0f172a, #020617);
   color: white;
+  height: 100vh;
+}
+
+/* фон с эффектом */
+body::before {
+  content: '';
+  position: fixed;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0,136,255,0.2), transparent);
+  animation: move 10s linear infinite;
+}
+
+@keyframes move {
+  0% { transform: translate(-25%, -25%); }
+  100% { transform: translate(25%, 25%); }
 }
 
 .container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  position: relative;
+  z-index: 2;
   padding: 20px;
 }
 
 .title {
   text-align: center;
   font-size: 26px;
-  margin-top: 10px;
-}
-
-.card {
-  background: #111827;
-  padding: 20px;
-  border-radius: 16px;
-  margin-top: 15px;
-}
-
-.balance {
-  font-size: 28px;
+  margin-bottom: 20px;
   font-weight: bold;
 }
 
+.card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.balance {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 .address {
-  font-size: 12px;
-  opacity: 0.7;
+  font-size: 13px;
   word-break: break-all;
+  margin-top: 10px;
+  opacity: 0.8;
 }
 
-.buttons {
-  margin-top: 20px;
-}
-
+/* кнопки */
 .btn {
   width: 100%;
-  padding: 16px;
+  padding: 15px;
+  border-radius: 14px;
   border: none;
-  border-radius: 12px;
   font-size: 16px;
   margin-top: 10px;
-  color: white;
+  cursor: pointer;
 }
 
-.deposit { background: #2563eb; }
-.send { background: #10b981; }
-.refresh { background: #7c3aed; }
+.deposit {
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+}
+
+.send {
+  background: linear-gradient(90deg, #10b981, #059669);
+}
+
+.refresh {
+  background: linear-gradient(90deg, #9333ea, #7c3aed);
+}
 
 .footer {
   text-align: center;
-  font-size: 13px;
+  margin-top: 15px;
+  font-size: 12px;
   opacity: 0.6;
-  margin-bottom: 10px;
 }
 </style>
 </head>
@@ -80,25 +105,21 @@ html, body {
 
 <div class="container">
 
-<div>
-  <div class="title">🟣 TON Wallet</div>
+<div class="title">🟣 TON Wallet</div>
 
-  <div class="card">
-    <div>💰 Balance</div>
-    <div class="balance" id="balance">Loading...</div>
-  </div>
-
-  <div class="card">
-    <div>💼 Address</div>
-    <div class="address" id="address">Loading...</div>
-  </div>
+<div class="card">
+  <div>💰 Balance</div>
+  <div class="balance" id="balance">0.000 TON</div>
 </div>
 
-<div class="buttons">
-  <button class="btn deposit" onclick="deposit()">➕ Deposit</button>
-  <button class="btn send" onclick="send()">✉️ Send</button>
-  <button class="btn refresh" onclick="loadData()">🔄 Refresh</button>
+<div class="card">
+  <div>💼 Address</div>
+  <div class="address" id="address">Loading...</div>
 </div>
+
+<button class="btn deposit">➕ Deposit</button>
+<button class="btn send">✉️ Send</button>
+<button class="btn refresh" onclick="loadData()">🔄 Refresh</button>
 
 <div class="footer">⚡ Commission: 0.25%</div>
 
@@ -108,29 +129,18 @@ html, body {
 const tg = window.Telegram.WebApp;
 tg.expand();
 
-// 👉 получаем ID пользователя Telegram
 const userId = tg.initDataUnsafe?.user?.id;
 
-// 🔥 ВРЕМЕННО (пока без сервера)
-const fakeData = {
-  address: "EQAy81M_996vELPDJISuBsaPNggPxlk6V2EJ4iM2DqGMio35",
-  balance: 0.000
-};
+async function loadData() {
+  try {
+    const res = await fetch(`https://ton-wallet-api.onrender.com/user?id=${userId}`);
+    const data = await res.json();
 
-// 🔥 загрузка данных
-function loadData() {
-  // ПОКА используем фейк (потом подключим API)
-  document.getElementById('address').innerText = fakeData.address;
-  document.getElementById('balance').innerText = fakeData.balance.toFixed(3) + " TON";
-}
-
-// кнопки
-function deposit() {
-  alert("Send TON to your address");
-}
-
-function send() {
-  alert("Send feature coming soon");
+    document.getElementById('balance').innerText = data.balance + ' TON';
+    document.getElementById('address').innerText = data.address;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 loadData();
